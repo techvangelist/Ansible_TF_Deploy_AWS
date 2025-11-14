@@ -1,0 +1,37 @@
+---
+- name: Use Ansible (in AAP) to Run a Terraform Project
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  vars:
+    terraform_dir: "{{ playbook_dir }}/terraform_project"
+    tf_vars:
+      aws_region: "us-east-1"
+      instance_type: "t2.micro"
+      key_name: "my-key-pair" # <-- Make sure this matches your AWS key name!
+
+  tasks:
+
+    - name: 1. Initialize Terraform (terraform init)
+      # --- THIS IS THE CHANGE ---
+      cloud.terraform.terraform:
+        project_path: "{{ terraform_dir }}"
+        state: initialized
+      tags: [init, always]
+
+    - name: 2. Run Terraform to build/ensure infrastructure (terraform apply)
+      # --- THIS IS THE CHANGE ---
+      cloud.terraform.terraform:
+        project_path: "{{ terraform_dir }}"
+        state: present
+        force_init: true
+        variables: "{{ tf_vars }}"
+      register: tf_output
+      tags: [apply, always]
+
+    - name: 3. Show the server's Public IP
+      ansible.builtin.debug:
+        msg: "✅ Server is built! Access it at: {{ tf_output.outputs.server_public_ip.value }}"
+      when: tf_output.outputs.server_public_ip.value is defined
+      tags: [apply, always]
