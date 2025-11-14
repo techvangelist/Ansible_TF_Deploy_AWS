@@ -2,11 +2,10 @@
 ---
 - name: create keypair
   amazon.aws.ec2_key:
-    name: "{{ key_name }}"
-    key_material: "{{ lookup('file', 'aws_id_rsa.pub') }}"
+    name: "{{ ssh_key_name }}"
+    key_material: "{{ lookup('file', 'aws_id_ed25519.pub') }}"
     region: "{{ aws_region }}"
   tags:
-    - ec2_create
     - ec2_keypair
   no_log: true
   register: keypair_out
@@ -15,25 +14,33 @@
   ansible.builtin.debug:
     var: keypair_out
     verbosity: 2
-
-- name: launch new instance + user data
-  amazon.aws.ec2_instance:
-    name: "{{ instance_name }}"
-    region: "{{ aws_region }}"
-    key_name: "{{ key_name }}"
-    instance_type: "{{ inst_type }}"
-    security_group: "{{ sec_grp }}"
-    vpc_subnet_id: "{{ vpc_subnet_id }}"
-    network:
-      assign_public_ip: true
-      delete_on_termination: true
-    image_id: "{{ ami_image_id }}"
-    user_data: "{{ lookup('file', 'user_data.sh') }}"
   tags:
-    - ec2_create
-  register: ec2_out
+    - ec2_keypair
 
-- name: Display ec2 output
+- name: Define the backend configuration at init
+  cloud.terraform.terraform:
+    project_path: "{{ project_dir }}"
+    state: "{{ state }}"
+    force_init: true
+    backend_config:
+      region: "{{ aws_region }}"
+      key: "{{ state_path }}"
+      bucket: "{{ bucket_name }}"
+  register: backend_out
+
+- name: Display backend info
   ansible.builtin.debug:
-    var: ec2_out
+    var: backend_out
     verbosity: 2
+
+#- name: Basic terraform deploy of a service
+#  cloud.terraform.terraform:
+#    project_path: '{{ project_dir }}'
+#    state: present
+#  register: tf_out
+
+#- name: Display terraform deployment info
+#  ansible.builtin.debug:
+#    var: tf_out
+#    verbosity: 2
+

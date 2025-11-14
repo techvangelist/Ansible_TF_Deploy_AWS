@@ -1,10 +1,14 @@
 ---
 # vars file for deploy_ec2
-instance_name: aws_rh_httpd_vm
+ssh_key_name: discovery_pub_key
 aws_region: us-east-2
+project_dir: "terraform_configs/terraform_deploy/"
 user_name: ec2-user
-key_name: akira_kp
-inst_type: t3.micro
+state: present
+state_path: asnell/tfstatefile
+bucket_name: "rhel9-bootc-techv"
+inst_type: t2.micro
+inst_name: tf-demo-inst-1
 sec_grp: ssh-web
 vpc_subnet_id: subnet-018350f9091326f7b
 ami_image_id: ami-0f6c1051253397fef # RHEL 9 (HVM), EBS General Purpose (SSD) Volume Type
