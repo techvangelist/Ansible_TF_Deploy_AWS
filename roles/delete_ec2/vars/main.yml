@@ -1,0 +1,9 @@
+---
+# vars file for create_ec2
+instance_name: aws_rh_httpd_vm
+aws_region: us-east-2
+user_name: ec2-user
+inst_type: t3.micro
+sec_grp: ssh-web
+vpc_subnet_id: subnet-018350f9091326f7b
+ami_image_id: ami-0f6c1051253397fef # RHEL 9 (HVM), EBS General Purpose (SSD) Volume Type

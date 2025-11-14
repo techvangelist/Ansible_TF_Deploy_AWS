@@ -1,0 +1,9 @@
+---
+- name: Create AWS EC2
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  tasks:
+  - name: import create_ec2 role
+    ansible.builtin.import_role:
+      name: create_ec2

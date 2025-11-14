@@ -1,0 +1,7 @@
+# tasks file for delete_ec2
+---
+- name: terminate ec2 instance
+  amazon.aws.ec2_instance:
+    name: "{{ instance_name }}"
+    region: "{{ aws_region }}"
+    state: absent

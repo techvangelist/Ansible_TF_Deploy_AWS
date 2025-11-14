@@ -1,0 +1,11 @@
+---
+- name: Create AWS EC2
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+  - name: Gather information about all instances in us-east AZs
+    amazon.aws.ec2_instance_info:
+      filters:
+        availability-zone: ["us-east-2a", "us-east-2b", "us-east-2c"]

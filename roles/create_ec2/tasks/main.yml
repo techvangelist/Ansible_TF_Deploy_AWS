@@ -1,0 +1,39 @@
+# tasks file for create_ec2
+---
+- name: create keypair
+  amazon.aws.ec2_key:
+    name: "{{ key_name }}"
+    key_material: "{{ lookup('file', 'aws_id_rsa.pub') }}"
+    region: "{{ aws_region }}"
+  tags:
+    - ec2_create
+    - ec2_keypair
+  no_log: true
+  register: keypair_out
+
+- name: Display keypair output
+  ansible.builtin.debug:
+    var: keypair_out
+    verbosity: 2
+
+- name: launch new instance + user data
+  amazon.aws.ec2_instance:
+    name: "{{ instance_name }}"
+    region: "{{ aws_region }}"
+    key_name: "{{ key_name }}"
+    instance_type: "{{ inst_type }}"
+    security_group: "{{ sec_grp }}"
+    vpc_subnet_id: "{{ vpc_subnet_id }}"
+    network:
+      assign_public_ip: true
+      delete_on_termination: true
+    image_id: "{{ ami_image_id }}"
+    user_data: "{{ lookup('file', 'user_data.sh') }}"
+  tags:
+    - ec2_create
+  register: ec2_out
+
+- name: Display ec2 output
+  ansible.builtin.debug:
+    var: ec2_out
+    verbosity: 2
