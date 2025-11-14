@@ -2,7 +2,7 @@
 # vars file for deploy_ec2
 ssh_key_name: discovery_pub_key
 aws_region: us-east-2
-project_dir: "terraform_configs/terraform_deploy/"
+project_dir: "terraform_configs/simple_terraform_deploy/"
 user_name: ec2-user
 state: present
 state_path: asnell/tfstatefile
