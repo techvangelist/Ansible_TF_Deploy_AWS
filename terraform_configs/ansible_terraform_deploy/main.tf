@@ -25,7 +25,7 @@ resource "aws_instance" "tf-demo-aws-ec2-instance-2" {
 }
 
 provider "aap" {
-  host     = "https://intrepid.leadloud.net/"
+  host     = "https://intrepid"
   username = "admin"
   password = "ansible123!"
   insecure_skip_verify = true
