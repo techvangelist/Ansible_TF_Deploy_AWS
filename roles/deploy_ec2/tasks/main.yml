@@ -33,6 +33,11 @@
     var: backend_out
     verbosity: 2
 
+- name: Show the server's Public IP
+  ansible.builtin.debug:
+    msg: "✅ Server is built! Access it at: {{ backend_out.outputs.server_public_ip.value }}"
+  when: backend_out.outputs.server_public_ip.value is defined
+
 #- name: Basic terraform deploy of a service
 #  cloud.terraform.terraform:
 #    project_path: '{{ project_dir }}'
